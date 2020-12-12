@@ -1,4 +1,4 @@
-# Unpacking Covid19 Fatality
+# Unpacking Covid-19 Fatality
 This is the code directory for our paper [Unpacking the Drop in COVID-19 Case Fatality Rates](https://arxiv.org/abs/2012.04825)
 
 ## Analysis and Results
