@@ -7,7 +7,8 @@ The `src/` folder contains code for generating the figures and tables in our pap
 - `national_covidcast.ipynb` generates Figure 1
 - `demographics.ipynb` generates Table 2 	
 - `hosp_death_categories.ipynb` generates Table 1
+- `testing.ipynb` generates Figure 2
 - `country_analysis.ipynb` generates the CDC national figures
 - `florida_analysis.ipynb` generates the Florida figures 
-
+- `block_bootstrap_hfr.py` computes estimates of the age-stratified HFR 
 
