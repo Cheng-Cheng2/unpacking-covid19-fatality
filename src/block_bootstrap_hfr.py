@@ -187,9 +187,9 @@ def print_support(florida):
     print(age_hfr[age_hfr.index.isin(['2020-04-01', '2020-04-15', '2020-07-15', '2020-11-01'])][['Hospitalized', 'Died', 'Age_group']])
 
 
-def load_national_data(timevar='cdc_report_dt', fpath='../data/national/covid_national_9_30.csv', verbose=False):
+def load_national_data(timevar='cdc_case_earliest_dt', fpath='../data/national/covid_national_9_30.csv', verbose=False):
     df = pd.read_csv(fpath, 
-                     parse_dates=['cdc_report_dt', 'pos_spec_dt', 'onset_dt'])
+                     parse_dates=['cdc_case_earliest_dt', 'pos_spec_dt', 'onset_dt'])
 
     time = timevar
     df = df[df['current_status'] == 'Laboratory-confirmed case'].copy()
@@ -541,8 +541,8 @@ if __name__ == '__main__':
         pos_spec_states = ["MA", "AR", "KS", "WA", "LA", "NY", "PA", "NV", "UT", "MN", "NC"]
         cdc_report_states = ["CA", "AZ", "GA", "TN"]
 
-        print('loading national_data w/ cdc_report_dt...')
-        cdc_report_df = load_national_data(timevar='cdc_report_dt', fpath=data_fpath, verbose=verbose)
+        print('loading national_data w/ cdc_case_earliest_dt...')
+        cdc_report_df = load_national_data(timevar='cdc_case_earliest_dt', fpath=data_fpath, verbose=verbose)
 
         print(f'====================== NATIONAL ========================')
         florida = cdc_report_df
@@ -584,7 +584,7 @@ if __name__ == '__main__':
 
         # national but with NJ, IL, and CT removed
         print('==================== CLEANED NATIONAL (no NJ, IL, CT) ====================')
-        cdc_report_df = load_national_data(timevar='cdc_report_dt', fpath=data_fpath, verbose=verbose)
+        cdc_report_df = load_national_data(timevar='cdc_case_earliest_dt', fpath=data_fpath, verbose=verbose)
         national = cdc_report_df[~cdc_report_df['res_state'].isin(['CT','IL','NJ'])]
 
         print('-------------------- NATIONAL MALE --------------------')
@@ -649,7 +649,7 @@ if __name__ == '__main__':
 
         # national but with NJ, IL, and CT removed
         print('==================== CLEANED NATIONAL (no NJ, IL, CT) ====================')
-        cdc_report_df = load_national_data(timevar='cdc_report_dt', fpath=data_fpath, verbose=verbose)
+        cdc_report_df = load_national_data(timevar='cdc_case_earliest_dt', fpath=data_fpath, verbose=verbose)
         national = cdc_report_df[~cdc_report_df['res_state'].isin(['CT','IL','NJ'])]
         print_support(national)
 

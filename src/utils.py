@@ -102,7 +102,7 @@ def get_groupby_rolling_df(df, grpvar='Age group', freq='7D', amt="Died", time='
 # helper functions for graphing
 def graph_leg_acc(p, name):
     min_date = "2020-04-01"
-    max_date = "2020-11-01"
+    max_date = "2020-12-01"
     grey = False
     p.set_xlim(pd.Timestamp(min_date), pd.Timestamp(max_date))
     grey = False
@@ -119,7 +119,7 @@ def graph_leg(p, name):
     #fig = p[0].get_figure()
    # p[0].set_xlabel("")
     min_date = "2020-04-01"
-    max_date = "2020-11-1"
+    max_date = "2020-12-1"
     p[0].set_xlim(pd.Timestamp(min_date), pd.Timestamp(max_date))
     grey = False
     if grey: 
@@ -143,7 +143,7 @@ def test():
     
 def prepare_hfr_age(newdf, grpvar, freq, amt, time):
     min_date = "2020-04-01"
-    max_date = "2020-11-1"
+    max_date = "2020-12-1"
     df = get_groupby_rolling_df(newdf, grpvar, freq, amt, time)
     df1 = df.copy()
     df1['Died'] = df1['rolling sum']
@@ -175,7 +175,7 @@ def get_mean_hfr_age(newdf, time):
 
 def prepare_cfr_age(newdf, grpvar, freq, amt, time):
     min_date = "2020-04-01"
-    max_date = "2020-10-10"
+    max_date = "2020-12-1"
     df = get_groupby_rolling_df(newdf, grpvar, freq, 'Died', time)
     df1 = df.copy()
     df1['Died'] = df1['rolling sum']
@@ -224,7 +224,7 @@ def get_age_ratio(amt, newdf, time):
     
 def get_from_mean(newdf, amt, ax, time):
     min_date = "2020-04-01"
-    max_date = "2020-10-01"
+    max_date = "2020-12-01"
     grpvar = 'Age_group'
     age_ratio = get_age_ratio(amt, newdf, time)
     if amt=='Hospitalized': # HFR
@@ -248,7 +248,7 @@ def graph_leg_save_bar(p, name, thre):
     
 def get_bar_chart(amt, newdf, time, name, ax, it, grpvar='Age_group'):
     min_date = "2020-04-01"
-    max_date = "2020-11-01"
+    max_date = "2020-12-01"
     #grpvar = 'state'
     if grpvar == 'Age_group':
         newdf = remove_unkown(newdf, grpvar)
