@@ -509,8 +509,8 @@ def update_hfr_national(date1, date2, gender='All', race='All', state='All'):
 
 
 
-
-app.run_server(debug=True, port=8010, host='localhost')
+if __name__ == '__main__':
+    app.run_server(debug=False, host='0.0.0.0', port=8010)
 
 
 

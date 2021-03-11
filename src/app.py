@@ -1,65 +1,33 @@
-# -*- coding: utf-8 -*-
-
-# Run this app with `python app.py` and
-# visit http://127.0.0.1:8050/ in your web browser.
-
 import dash
 import dash_core_components as dcc
 import dash_html_components as html
-import plotly.express as px
-import pandas as pd
-import numpy as np
-import matplotlib.pyplot as plt
-
-
-
-##########################################
-from plotly.tools import mpl_to_plotly
-
-fig = plt.figure()
-#fig, ax = plt.sumpl_fig = plt.figure()
-#bplots()
-ax = fig.add_subplot(111)
-
-ax.plot(np.arange(1, 5) , np.arange(2, 6))
-
-
-plotly_fig = mpl_to_plotly(fig)
-graph = dcc.Graph(id='myGraph', fig=plotly_fig)
-
-
-
-
-
-######################################
-
+########### Initiate the app
 external_stylesheets = ['https://codepen.io/chriddyp/pen/bWLwgP.css']
-
 app = dash.Dash(__name__, external_stylesheets=external_stylesheets)
-
-# assume you have a "long-form" data frame
-# see https://plotly.com/python/px-arguments/ for more options
-df = pd.DataFrame({
-    "Fruit": ["Apples", "Oranges", "Bananas", "Apples", "Oranges", "Bananas"],
-    "Amount": [4, 1, 2, 2, 4, 5],
-    "City": ["SF", "SF", "SF", "Montreal", "Montreal", "Montreal"]
-})
-
-fig = px.bar(df, x="Fruit", y="Amount", color="City", barmode="group")
-
+application = app.server
+app.title='Dash on AWS EB!'
+########### Set up the layout
 app.layout = html.Div(children=[
     html.H1(children='Hello Dash'),
-
     html.Div(children='''
-        Dash: A web application framework for Python.
-    '''),
-
-    # dcc.Graph(
-    #     id='example-graph',
-    #     figure=fig
-    # )
-    graph
+            This is Dash running on Elastic Beanstalk.
+        '''),
+    dcc.Graph(
+            id='example-graph',
+            figure={
+                'data': [
+                    {'x': ['left', 'center', 'right'], 'y': [3,7,6], 'type': 'bar', 'name': 'category 1'},
+                    {'x': ['left', 'center', 'right'], 'y': [4,2,5], 'type': 'bar', 'name': 'category 2'},
+                ],
+                'layout': {
+                    'plot_bgcolor': 'lightgray',
+                    'title': 'Graph Title',
+                    'xaxis':{'title':'x-axis label'},
+                    'yaxis':{'title':'y-axis label'},
+                },
+            }
+        )
 ])
-
+########### Run the app
 if __name__ == '__main__':
-    app.run_server(debug=True)
+    application.run(debug=False, port=8080)
