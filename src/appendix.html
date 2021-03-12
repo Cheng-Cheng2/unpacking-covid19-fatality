@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <!-- Remote style sheet -->
+    <link rel="stylesheet"
+          href=" 'https://codepen.io/chriddyp/pen/bWLwgP.css'">
+    
+    <!-- Local style sheet relative to workspace folder -->
+    <link rel="stylesheet" href="/style.css">
+
+    <!-- Local style sheet relative to this file -->
+    <link rel="stylesheet" href="style.css">
+    
+    <!-- Embedded style sheet -->
+    <style>
+        #content {
+            display: block;
+        }
+
+        .internal {            display: block;
+        }
+    </style>
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script type="text/javascript" id="MathJax-script" async
+      src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js">
+    </script>
+</head>
+<H1> Appendix </H1>
+
+<H2> HFR Estimation using Block-Bootstrap and Cubic Splines. </H2>
+
+
+<body>
+<ul>
+    <li> Fit a cubic smoothing spline \(S(t)\) to the 7-day lagged average HFRs, where the HFR for day
+         \(t \in \{1, ..., T\}\) is denoted \(HFR_t\).
+        This provides an estimate of the trend. 
+        Now we would like confidence intervals around this trend.
+        </Li>
+        <li> ``Pre-whiten" the data by taking the residuals of the cubic spline \(r_t = \{S(t) - HFR_t\}\), where \(t \in \{1, 2, ..., T\}\). 
+        </Li>
+        <li> Among the series of residuals \(\{r_1, r_2, ..., r_T\}\), 
+        use a moving block-bootstrap (MBB) 
+        with block size \(B = 7\) days in order 
+        to resample \(N = 1000\) replicates of length \(T\). 
+        The MBB splits the series into \(T - B + 1\) 
+        overlapping blocks of length \(B\), 
+        and draws \(T/B\) blocks at random with replacement. 
+        Concatenating these blocks in the order they are drawn 
+        yields a new series of residuals 
+        \(r'^{(i)} = \{r'^{(i)}_1, r'^{(i)}_2, ..., r'^{(i)}_T\}\),
+        where \(i \in \{1, 2, ..., N\}\)
+        (since this step is repeated \(N\) times to create \(N\) replicates).
+        </Li>
+        <li> ``Post-blacken" each of the residual replicates 
+        by adding it back onto the estimated trend \(S(t)\) in step 1. 
+        This gives us new HFR trajectories 
+        \(HFR'^{(i)} = \{S(1) + r'^{(i)}_1, S(2) + r'^{(i)}_2, ..., S(T) + r'^{(i)}_T\}\),
+        where \(i \in \{1, 2, ..., N\}\), 
+        drawn from the original data distribution 
+        (assuming exchangeable blocks of residuals). 
+        </Li>
+        <li> Re-estimate the trend for each of the trajectories 
+        \(HFR'^{(i)}\) using a cubic smoothing spline 
+        \(S'^{(i)}(t)\), \(i \in \{1, 2, ..., N\}\). 
+        Equipped with these fitted splines 
+        \(\{S'^{(1)}(t), S'^{(2)}(t), ..., S'^{(N)}(t)\}\) 
+        from block-bootstrapping the residuals and post-blackening, 
+        we can now estimate the trend and \(95\%\) confidence intervals 
+        for any time \(t \in \{1, 2, ..., T\}\).
+        </Li>
+</ul>
+</body>
