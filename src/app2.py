@@ -127,7 +127,7 @@ app.layout = html.Div([
     ],
         className="row"
     ),
-
+html.H6("For patient privacy protection, less or equal to 5 counts of cases, hospitalizations, and deaths on any given day would not be plotted.", style={'color':'blue'}),
     # Age separated Florida cases, hosps, deaths
     html.H2(children="Age-stratified", style={'backgroundColor':'grey'}),    
      html.Div([
@@ -285,7 +285,7 @@ app.layout = html.Div([
     ],
         className="row"
     ),
-    html.H6("For patient privacy protection, less or equal to 5 counts of cases, hospitalizations, and deaths on any given day would not be plotted.", style={'color':'blue'}),
+    
 
 
  # HFR estimates nationally and for florida
@@ -512,6 +512,7 @@ def update_hfr_national(date1, date2, gender='All', race='All', state='All'):
             )
         ]
     )
+
 
 
 if __name__ == '__main__':
