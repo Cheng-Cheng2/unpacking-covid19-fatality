@@ -13,6 +13,7 @@ import numpy as np
 #import dash_html_components as html
 from hfr_for_viz import compute_hfr_estimates
 import dash_table
+#from dash_extensions.enrich import Dash, ServersideOutput, Output, Input, Trigger
 
 
 app = dash.Dash(
@@ -23,15 +24,14 @@ app = dash.Dash(
 )
 # prepare data and plot
 florida, cdc = get_datafiles_ready()
-#fig= plt.figure()
-#ax= fig.add_subplot(111)
-#ax.plot(range(10), [i**2 for i in range(10)])
-# ax.grid(True)
+
 race_cats = ['All']+cdc['race_ethnicity_combined'].dropna().unique().tolist()
 race_cats = [x for x in race_cats if (x != 'Missing')  and (x!='Unknown')]
 states_cats = cdc['res_state'].dropna().unique()#.tolist()
 states_cats = ['All']+[x for x in states_cats if (x != 'Missing') and (x!= 'Unknown')]
 app.layout = html.Div([
+    dcc.Store(id="store"),  # this is the store that holds the data
+    html.Div(id="onload"),  # this div is used to trigger the query_df function on page load
 
     html.H1(children="Unpacking the Drop in COVID-19 CFR: A Study of National and Florida Line-Level Data"),
     # https://dash.plotly.com/sharing-data-between-callbacks
@@ -205,7 +205,7 @@ app.layout = html.Div([
     ],
         className="row"
     ),
-
+    html.H6("For patient privacy protection, less or equal to 5 counts of cases, hospitalizations, and deaths on any given day would not be plotted.", style={'color':'blue'}),
     # age distribution section
     html.H2(children="COVID-19 Age Distributions among Cases, Hospitalizations, and Deaths", style={'backgroundColor':'yellow'}),
     html.Div([
@@ -285,6 +285,7 @@ app.layout = html.Div([
     ],
         className="row"
     ),
+    html.H6("For patient privacy protection, less or equal to 5 counts of cases, hospitalizations, and deaths on any given day would not be plotted.", style={'color':'blue'}),
 
 
  # HFR estimates nationally and for florida
@@ -377,8 +378,12 @@ def get_data(value):
     florida, cdc = get_datafiles_ready()
     return [florida.to_json(date_format='iso', orient='split'), cdc.to_json(date_format='iso', orient='split')] 
  """
+# loading data 
+
+
 
 #update aggregate cases, hosptitalizatons, deaths
+
 @app.callback(Output(component_id='agg-f-case-g', component_property='figure'),
               Output(component_id='agg-f-hosp-g', component_property='figure'),
               Output(component_id='agg-f-died-g', component_property='figure'),
@@ -436,7 +441,8 @@ def update_age_figures_national(gender, race, state):
 
 
 
-## florida national plots
+
+## florida national tables
 @app.callback(Output(component_id='florida-table', component_property='children'),
               #Output(component_id='age-f-hosp-g', component_property='figure'),
               #Output(component_id='age-f-died-g', component_property='figure'),
@@ -506,7 +512,6 @@ def update_hfr_national(date1, date2, gender='All', race='All', state='All'):
             )
         ]
     )
-
 
 
 if __name__ == '__main__':

@@ -171,7 +171,12 @@ for i, v in enumerate(vrs):
     df.groupby(grpvar)['rolling sum'].plot()#(ylabel=ylb, xlabel=xlb, ax=ax[i])
     df = df.reset_index()
     df = df.rename(columns={"Case_":"Date", 'rolling sum':vnames[i], 'Age_group':'Age Group'})
+    df.loc[df[vnames[i]] <=5, vnames[i]] = np.nan
     fig = px.line(df.reset_index(), x='Date', y=vnames[i], color='Age Group')
+    fig.update_xaxes(
+        dtick = 'M1',
+        tickformat = "%b\n%Y"
+    )
     fig.update_layout(xaxis_title = xlb,
                     yaxis_title = ylb,
                     legend_title = "Age Group", 
@@ -181,7 +186,7 @@ for i, v in enumerate(vrs):
                     )
     figs.append(fig)
 
-
+figs[2]
     #fig.append_trace(p, 1, i)    
 
 #     graph_leg(p, '{}'.format(lbs[i]))
@@ -199,9 +204,17 @@ for i, v in enumerate(vrs):
 
 
 # %%
-figs[2]
+
+# %%
+
+# %%
+df
 
 
+
+
+
+# %%
 
 # %% [markdown]
 # # Bar plots for age ratios
