@@ -33,7 +33,7 @@ app.layout = html.Div([
     dcc.Store(id="store"),  # this is the store that holds the data
     html.Div(id="onload"),  # this div is used to trigger the query_df function on page load
 
-    html.H1(children="Unpacking the Drop in COVID-19 CFR: A Study of National and Florida Line-Level Data"),
+    #html.H1(children="Unpacking the Drop in COVID-19 CFR: A Study of National and Florida Line-Level Data"),
     # https://dash.plotly.com/sharing-data-between-callbacks
     #html.Button('Load data', id='load-data-button', n_clicks=0),
     # dcc.Loading(
@@ -41,11 +41,15 @@ app.layout = html.Div([
     #     type='default',
     #     children = html.Div(id='load-data')
     # ),
-
-    html.H2(children="COVID-19 Cases, Hospitalizations, and Deaths", style={'backgroundColor':'yellow'}),
+    
+    html.Div([
+        html.H4(children="COVID-19 Cases, Hospitalizations, and Deaths", style={'color': 'black'})
+            #style={'backgroundColor':'yellow'}),
+            ], className="twelve columns", style={'backgroundColor': '#66A3F9', 'padding-left': '1em'}),
+        
    
     # html.H6(children="Gender"),
-    html.H2(children="Aggregate", style={'backgroundColor':'grey'}),    
+    html.H5(children="Aggregate", style={'backgroundColor':'lightgrey', 'font-style': 'italic'}),    
 
     html.Div([
         html.Div([
@@ -89,39 +93,39 @@ app.layout = html.Div([
     # aggregate FLorida cases, hosps,deaths
      # Florida cases, hosps, deaths
    
-    html.H3(children="Florida"),
+    html.H5(children="Florida"),
     html.Div([
         html.Div([
-            html.H3('Cases'),
+            html.H6('Cases'),
             dcc.Graph(id='agg-f-case-g')
         ], className="four columns"),
 
         html.Div([
-            html.H3('Hospitalizations'),
+            html.H6('Hospitalizations'),
             dcc.Graph(id='agg-f-hosp-g')
         ], className="four columns"),
 
         html.Div([
-            html.H3('Deaths'),
+            html.H6('Deaths'),
             dcc.Graph(id='agg-f-died-g')
         ], className="four columns"),
     ],
         className="row"
     ),
-    html.H3(children='National'),
+    html.H5(children='National'),
     html.Div([
         html.Div([
-            html.H3('Cases'),
+            html.H6('Cases'),
             dcc.Graph(id='agg-n-case-g')
         ], className="four columns"),
 
         html.Div([
-            html.H3('Hospitalizations'),
+            html.H6('Hospitalizations'),
             dcc.Graph(id='agg-n-hosp-g')
         ], className="four columns"),
 
         html.Div([
-            html.H3('Deaths'),
+            html.H6('Deaths'),
             dcc.Graph(id='agg-n-died-g')
         ], className="four columns"),
     ],
@@ -129,7 +133,7 @@ app.layout = html.Div([
     ),
 html.H6("For patient privacy protection, less or equal to 5 counts of cases, hospitalizations, and deaths on any given day would not be plotted.", style={'color':'blue'}),
     # Age separated Florida cases, hosps, deaths
-    html.H2(children="Age-stratified", style={'backgroundColor':'grey'}),    
+    html.H5(children="Age-stratified", style={'backgroundColor':'lightgrey', 'font-style': 'italic'}),    
      html.Div([
         html.Div([
             html.H6('Gender (for both Florida and national)'),
@@ -167,45 +171,45 @@ html.H6("For patient privacy protection, less or equal to 5 counts of cases, hos
     ],
         className="row"
     ),
-    html.H3(children="Florida"),
+    html.H5(children="Florida"),
     html.Div([
         html.Div([
-            html.H3('Cases'),
+            html.H6('Cases'),
             dcc.Graph(id='f-case-g')
         ], className="four columns"),
 
         html.Div([
-            html.H3('Hospitalizations'),
+            html.H6('Hospitalizations'),
             dcc.Graph(id='f-hosp-g')
         ], className="four columns"),
 
         html.Div([
-            html.H3('Deaths'),
+            html.H6('Deaths'),
             dcc.Graph(id='f-died-g')
         ], className="four columns"),
     ],
         className="row"
     ),
-    html.H3(children='National'),
+    html.H5(children='National'),
     html.Div([
         html.Div([
-            html.H3('Cases'),
+            html.H6('Cases'),
             dcc.Graph(id='n-case-g')
         ], className="four columns"),
 
         html.Div([
-            html.H3('Hospitalizations'),
+            html.H6('Hospitalizations'),
             dcc.Graph(id='n-hosp-g')
         ], className="four columns"),
 
         html.Div([
-            html.H3('Deaths'),
+            html.H6('Deaths'),
             dcc.Graph(id='n-died-g')
         ], className="four columns"),
     ],
         className="row"
     ),
-    html.H6("For patient privacy protection, less or equal to 5 counts of cases, hospitalizations, and deaths on any given day would not be plotted.", style={'color':'blue'}),
+    html.P("For patient privacy protection, counts less than or equal to five cases, hospitalizations, and deaths on any given day will not be plotted.", style={'color':'gray'}),
     # age distribution section
     html.H2(children="COVID-19 Age Distributions among Cases, Hospitalizations, and Deaths", style={'backgroundColor':'yellow'}),
     html.Div([
@@ -293,7 +297,7 @@ html.H6("For patient privacy protection, less or equal to 5 counts of cases, hos
 
     ###########DATES
     html.H6("Choose two dates for estimating HFR drops"),
-    html.H5("**WARNING: after 2020-12-01, due to ramp-ups of vaccines, HFR estimates might not reflect all treatment improvements.**", style={'color':'red'}),
+    #html.H5("**WARNING: after 2020-12-01, due to ramp-ups of vaccines, HFR estimates might not reflect all treatment improvements.**", style={'color':'red'}),
     html.Div([
         html.Div([
             #html.H3('Florida'),
@@ -301,7 +305,7 @@ html.H6("For patient privacy protection, less or equal to 5 counts of cases, hos
             dcc.DatePickerRange(
                 id='date1',
                 min_date_allowed="2020-04-01",
-                max_date_allowed="2021-02-01",
+                max_date_allowed="2020-12-01",
                 initial_visible_month="2020-04-01",
                 start_date = '2020-04-01',
                 end_date="2020-12-01"
@@ -364,7 +368,7 @@ html.H6("For patient privacy protection, less or equal to 5 counts of cases, hos
         className="row"
     ),
 
-    html.H5("**Note: we ommit age groups where less than two deaths occured for reliability.**", style={'color':'red'}),
+    html.H5("**Note: HFR estimates with insufficient support are omitted.**", style={'color':'red'}),
 
 ],
     style={'marginLeft': 5, 'marginRight': 20}
@@ -517,6 +521,7 @@ def update_hfr_national(date1, date2, gender='All', race='All', state='All'):
 
 if __name__ == '__main__':
     app.run_server(debug=False, host='0.0.0.0', port=8010)
+    #app.run_server(debug=True, host='0.0.0.0', port=8010)
 
 
 
