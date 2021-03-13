@@ -30,6 +30,7 @@
 
 <H2> HFR Estimation using Block-Bootstrap and Cubic Splines. </H2>
 
+<H3> Algorithm Walkthrough: </H3>
 
 <body>
 <ul>
@@ -72,3 +73,46 @@
         </Li>
 </ul>
 </body>
+
+<H3> Estimate of trend and uncertainty in age-stratified HFRs: </H3>
+
+While we focus on the two peaks and 
+the endpoints of the study time range,
+we can easily read off similar estimates 
+with uncertainty for all dates between 
+April 1st and December 1st (Fig.1).
+Overall, the cubic smoothing splines 
+appear to fit the 7-day lagged average HFRs relatively well. 
+Consistent with our point estimates, 
+the overall HFR in Florida appears relatively flat 
+until August, in which the HFR decreases 
+greatly across all age groups 
+(Fig.1a). 
+In the national data, there appears to be 
+an almost monotonic decline in HFR 
+across all age groups for the entire time range,
+with the decrease slowing down in August, 
+but slightly picking up again in December
+(Fig.1b).
+<figure>
+    <img src="img/florida_fdoh_full_est.svg" alt="Trulli" style="width:100%">
+    <figcaption><i>Fig.1a - Florida FDOH Data.</i></figcaption>
+  </figure>
+  <figure>
+    <img src="img_country/national_cleaned_full_est.svg" alt="Trulli" style="width:100%">
+    <figcaption><i>Fig.1b - United States CDC Data.</i></figcaption>
+Fig.1 - Estimate of trend and uncertainty in age-stratified HFRs, derived using residual block-bootstrapping with cubic splines and post-blackening. Solid line corresponds to the age-stratified estimate, shaded region corresponds to the uncertainty around the estimate, and dotted line shows the original 7-day lagged HFR.
+  </figure>
+
+
+<H2> State-wise distribution </H2>
+
+Between April 1st and April 15th, \(34.5\%\) of national CDC cases were recorded in New York alone.
+Over the next three monthes, cases in New York had diminished and were starting to surge in other states.
+
+  <figure>
+    <img src="img_country/top_states.svg" alt="Trulli" style="width:100%">
+    <figcaption>Fig.2 - State-wise distribution of cases, 
+        (eventual) hospitalizations,
+        and (eventual) deaths for top five states FL, NY, CA, GA and NC (and the rest) with most COVID-19 cases from United States CDC data, by date of report to the CDC (U.S.)</figcaption>
+  </figure>
