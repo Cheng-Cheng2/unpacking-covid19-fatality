@@ -11,7 +11,7 @@ import json
 import os
 from utils import *
 import plotly.express as px
-pd.options.plotting.backend = "plotly"
+#pd.options.plotting.backend = "plotly"
 import pickle
 IMGDIR = "cache_figs"
 

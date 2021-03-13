@@ -25,6 +25,12 @@ app = dash.Dash(
 # prepare data and plot
 florida, cdc = get_datafiles_ready()
 
+sty = {
+    'toplevel': {'backgroundColor': '#66A3F9', 'padding-left': '1em'},
+    'midlevel': {'backgroundColor': 'lightgray', 'text-align': 'left', 'padding': '1em', 'padding-left': '2em', 'font-size': '1.5em'},
+    'local': {'font-size': '2em', 'color': '#66A3F9', 'font-weight': 'bold'},
+}
+
 race_cats = ['All']+cdc['race_ethnicity_combined'].dropna().unique().tolist()
 race_cats = [x for x in race_cats if (x != 'Missing')  and (x!='Unknown')]
 states_cats = cdc['res_state'].dropna().unique()#.tolist()
@@ -42,333 +48,353 @@ app.layout = html.Div([
     #     children = html.Div(id='load-data')
     # ),
     
+    ########################### Cases, Hospitalizations, and Deaths ###############################
+    html.Div([html.H4(children="COVID-19 Cases, Hospitalizations, and Deaths", style={'color': 'black'})], 
+        className="twelve columns", style=sty['toplevel']),    
     html.Div([
-        html.H4(children="COVID-19 Cases, Hospitalizations, and Deaths", style={'color': 'black'})
-            #style={'backgroundColor':'yellow'}),
-            ], className="twelve columns", style={'backgroundColor': '#66A3F9', 'padding-left': '1em'}),
+        ######### Aggregate
+        html.Br(), 
+        html.Details([
+            html.Summary('Aggregate', style=sty['midlevel']),
+            html.Div([
+                # dropdowns
+                html.Div([
+                    html.Div([
+                        html.H6('Gender (for both Florida and national)'),
+                        dcc.Dropdown(
+                            id='gender-dropdown',
+                            options=[{'label': 'All', 'value': 'All'},
+                                     {'label': 'Female', 'value': 'Female'},
+                                     {'label': 'Male', 'value': 'Male'}],
+                            value='All',
+                        ),
+                    ], className="four columns", style={'margin': '1em'}),
+
+                    html.Div([
+                        #html.H4("For country only:", style={"background-color": "grey"}),
+                        html.H6('Race (for national only)'),
+                        dcc.Dropdown(
+                            id='race-dropdown',
+                            options=[{'label': i, 'value': i} for i in race_cats],
+                            value='All',
+                        ),
+                    ], className="four columns", style={'margin': '1em'}),
+
+                    html.Div([
+                        #html.H4("\n"),
+                        html.H6('State (for national only)'),
+                        dcc.Dropdown(
+                            id='state-dropdown',
+                            options=[{'label': i, 'value': i} for i in states_cats],
+                            value='All',
+                        ),
+                    ], className="four columns", style={'margin': '1em'}),
+                ], className="row"),
+                    
+                html.Div([
+                    # Florida cases, hosps, deaths
+                    html.Details([
+                        html.Summary('Florida', style=sty['local']),
+                        html.Div([
+                            html.Div([
+                                html.H6('Cases'),
+                                dcc.Graph(id='agg-f-case-g')
+                            ], className="four columns"),
+
+                            html.Div([
+                                html.H6('Hospitalizations'),
+                                dcc.Graph(id='agg-f-hosp-g')
+                            ], className="four columns"),
+
+                            html.Div([
+                                html.H6('Deaths'),
+                                dcc.Graph(id='agg-f-died-g')
+                            ], className="four columns"),    
+                        ], className="row")
+                    ]),
+
+                    # National cases, hosps, deaths
+                    html.Details([
+                        html.Summary('National', style=sty['local']),
+                        html.Div([
+                            html.Div([
+                                html.H6('Cases'),
+                                dcc.Graph(id='agg-n-case-g')
+                            ], className="four columns"),
+
+                            html.Div([
+                                html.H6('Hospitalizations'),
+                                dcc.Graph(id='agg-n-hosp-g')
+                            ], className="four columns"),
+
+                            html.Div([
+                                html.H6('Deaths'),
+                                dcc.Graph(id='agg-n-died-g')
+                            ], className="four columns"),
+                        ], className="row"),
+                    ]),
+                ], style={'padding': '2em'}),
+                html.Br(),
+                html.P("**For privacy reasons, data points with less or equal to 5 counts of cases, hospitalizations, and deaths on any given day are omitted.", style={'color':'lightgray'}),
+            ]),
+        ]),
+
+        ######### Age-stratified
+        html.Br(), 
+        # html.Div([html.H5(children="Age-stratified")], style={'backgroundColor': 'lightgray', 'text-align': 'left', 'padding': '1em'}),
+        html.Details([
+            html.Summary('Age-stratified', style=sty['midlevel']),
+            html.Div([
+                # Dropdowns
+                html.Div([
+                    html.Div([
+                        html.H6('Gender (for both Florida and national)'),
+                        dcc.Dropdown(
+                            id='gender-dropdown-str',
+                            options=[{'label': 'All', 'value': 'All'},
+                                     {'label': 'Female', 'value': 'Female'},
+                                     {'label': 'Male', 'value': 'Male'}
+
+                                     ],
+                            value='All',
+                        ),
+                    ], className="four columns"),
+
+                    html.Div([
+                        #html.H4("For country only:", style={"background-color": "grey"}),
+                        html.H6('Race (for national only)'),
+                        dcc.Dropdown(
+                            id='race-dropdown-str',
+                            options=[{'label': i, 'value': i} for i in race_cats],
+                            value='All',
+                        ),
+                    ], className="four columns"),
+
+                    html.Div([
+                        #html.H4("\n"),
+                        html.H6('State (for national only)'),
+                        dcc.Dropdown(
+                            id='state-dropdown-str',
+                            options=[{'label': i, 'value': i} for i in states_cats],
+                            value='All',
+                        ),
+                    ], className="four columns"),
+
+                ], className="row"),
+                
+                html.Div([
+                    # Age separated Florida cases, hosps, deaths
+                    html.Details([
+                        html.Summary('Florida', style=sty['local']),
+                        html.Div([
+                            html.Div([
+                                html.H6('Cases'),
+                                dcc.Graph(id='f-case-g')
+                            ], className="four columns"),
+
+                            html.Div([
+                                html.H6('Hospitalizations'),
+                                dcc.Graph(id='f-hosp-g')
+                            ], className="four columns"),
+
+                            html.Div([
+                                html.H6('Deaths'),
+                                dcc.Graph(id='f-died-g')
+                            ], className="four columns"),
+                        ], className="row"),
+                    ]),
+
+                    # Age separated national cases, hosps, deaths
+                    html.Details([
+                        html.Summary('National', style=sty['local']),
+                        html.Div([
+                            html.Div([
+                                html.H6('Cases'),
+                                dcc.Graph(id='n-case-g')
+                            ], className="four columns"),
+
+                            html.Div([
+                                html.H6('Hospitalizations'),
+                                dcc.Graph(id='n-hosp-g')
+                            ], className="four columns"),
+
+                            html.Div([
+                                html.H6('Deaths'),
+                                dcc.Graph(id='n-died-g')
+                            ], className="four columns"),
+                        ], className="row"),
+                    ]),
+                ], style={'padding': '2em'}),
+                html.Br(),
+                html.P("**For privacy reasons, data points with less or equal to 5 counts of cases, hospitalizations, and deaths on any given day are omitted.", style={'color':'lightgray'}),
+            ])
+        ])                
+    ], className="twelve columns", style={'padding': '1em'}),
+    
+    ########################### Age Distributions ###############################
+    html.Div([html.H4(children="COVID-19 Age Distributions among Cases, Hospitalizations, and Deaths", style={'color': 'black'})], 
+        className="twelve columns", style=sty['toplevel']),    
+    
+    html.Div([
+        # Dropdowns
+        html.Div([
+            html.Div([
+                html.H6('Gender (for both Florida and national)'),
+                dcc.Dropdown(
+                    id='age-gender-dropdown',
+                    options=[{'label': 'All', 'value': 'All'},
+                             {'label': 'Female', 'value': 'Female'},
+                             {'label': 'Male', 'value': 'Male'}
+
+                             ],
+                    value='All',
+                ),
+            ], className="four columns"),
+
+            html.Div([
+                #html.H4("For country only:", style={"background-color": "grey"}),
+                html.H6('Race (for national only)'),
+                dcc.Dropdown(
+                    id='age-race-dropdown',
+                    options=[{'label': i, 'value': i} for i in race_cats],
+                    value='All',
+                ),
+            ], className="four columns"),
+
+            html.Div([
+                #html.H4("\n"),
+                html.H6('State (for national only)'),
+                dcc.Dropdown(
+                    id='age-state-dropdown',
+                    options=[{'label': i, 'value': i} for i in states_cats],
+                    value='All',
+                ),
+            ], className="four columns"),
+        ], className="row"),
         
-   
-    # html.H6(children="Gender"),
-    html.H5(children="Aggregate", style={'backgroundColor':'lightgrey', 'font-style': 'italic'}),    
+        html.Div([
+            # Florida
+            html.Details([
+                html.Summary('Florida', style=sty['local']),
+                html.Div([
+                    html.Div([
+                        html.H3('Cases'),
+                        dcc.Graph(id='age-f-case-g')
+                    ], className="four columns"),
+
+                    html.Div([
+                        html.H3('Hospitalizations'),
+                        dcc.Graph(id='age-f-hosp-g')
+                    ], className="four columns"),
+
+                    html.Div([
+                        html.H3('Deaths'),
+                        dcc.Graph(id='age-f-died-g')
+                    ], className="four columns"),
+                ], className="row")
+            ]),
+            
+            # National
+            html.Details([
+                html.Summary('National', style=sty['local']),
+                html.Div([
+                    html.Div([
+                        html.H3('Cases'),
+                        dcc.Graph(id='age-n-case-g')
+                    ], className="four columns"),
+
+                    html.Div([
+                        html.H3('Hospitalizations'),
+                        dcc.Graph(id='age-n-hosp-g')
+                    ], className="four columns"),
+
+                    html.Div([
+                        html.H3('Deaths'),
+                        dcc.Graph(id='age-n-died-g')
+                    ], className="four columns"),
+                ], className="row"),
+            ])
+        ], style={'padding': '2em'})
+    ], style={'padding': '1em'}),
+
+    ########################### HFR estimates nationally and for florida #########################
+    html.Div([html.H4(children="Age-stratified HFR Estimates", style={'color': 'black'})], 
+        className="twelve columns", style=sty['toplevel']),    
 
     html.Div([
+
+        # Date picker 
+        html.H6("Choose two dates for estimating HFR drops:"),
+        #html.H5("**WARNING: after 2020-12-01, due to ramp-ups of vaccines, HFR estimates might not reflect all treatment improvements.**", style={'color':'red'}),
         html.Div([
-            html.H6('Gender (for both Florida and national)'),
-            dcc.Dropdown(
-                id='gender-dropdown',
-                options=[{'label': 'All', 'value': 'All'},
-                         {'label': 'Female', 'value': 'Female'},
-                         {'label': 'Male', 'value': 'Male'}
+            html.Div([
+                #html.H3('Florida'),
+                #dcc.Input(id="date1", type="text", placeholder="2020-04-01")
+                dcc.DatePickerRange(
+                    id='date1',
+                    min_date_allowed="2020-04-01",
+                    max_date_allowed="2020-12-01",
+                    initial_visible_month="2020-04-01",
+                    start_date = '2020-04-01',
+                    end_date="2020-12-01"
+                ),
+            ], className="six columns"),
+        ], className="row"),
 
-                         ],
-                value='All',
-            ),
-        ], className="four columns"),
-
+        # Dropdown
+        html.Br(),
         html.Div([
-            #html.H4("For country only:", style={"background-color": "grey"}),
-            html.H6('Race (for national only)'),
-            dcc.Dropdown(
-                id='race-dropdown',
-                options=[{'label': i, 'value': i} for i in race_cats],
-                value='All',
-            ),
-        ], className="four columns"),
+            html.Div([
+                html.H6('Gender (for both Florida and national)'),
+                dcc.Dropdown(
+                    id='hfr-gender-dropdown',
+                    options=[{'label': 'All', 'value': 'All'},
+                             {'label': 'Female', 'value': 'Female'},
+                             {'label': 'Male', 'value': 'Male'}
 
+                             ],
+                    value='All',
+                ),
+            ], className="four columns"),
+
+            html.Div([
+                #html.H4("For country only:", style={"background-color": "grey"}),
+                html.H6('Race (for national only)'),
+                dcc.Dropdown(
+                    id='hfr-race-dropdown',
+                    options=[{'label': i, 'value': i} for i in race_cats],
+                    value='All',
+                ),
+            ], className="four columns"),
+
+            html.Div([
+                #html.H4("\n"),
+                html.H6('State (for national only)'),
+                dcc.Dropdown(
+                    id='hfr-state-dropdown',
+                    options=[{'label': i, 'value': i} for i in states_cats],
+                    value='All',
+                ),
+            ], className="four columns"),
+
+        ], className="row"),
+        
+        # Tables
         html.Div([
-            #html.H4("\n"),
-            html.H6('State (for national only)'),
-            dcc.Dropdown(
-                id='state-dropdown',
-                options=[{'label': i, 'value': i} for i in states_cats],
-                value='All',
-            ),
-        ], className="four columns"),
+            html.Div([
+                html.P('Florida', style=sty['local']),
+                html.Div(id='florida-table')
+            ], className="six columns"),
 
-    ],
-        className="row"
-    ),
-    
-    
-    # aggregate FLorida cases, hosps,deaths
-     # Florida cases, hosps, deaths
-   
-    html.H5(children="Florida"),
-    html.Div([
-        html.Div([
-            html.H6('Cases'),
-            dcc.Graph(id='agg-f-case-g')
-        ], className="four columns"),
+            html.Div([
+                html.P('National', style=sty['local']),
+                html.Div(id='national-table')
+            ], className="six columns"),
+        ], className="row"),
 
-        html.Div([
-            html.H6('Hospitalizations'),
-            dcc.Graph(id='agg-f-hosp-g')
-        ], className="four columns"),
+        html.P("**Note: HFR estimates with insufficient support are omitted.", style={'color':'lightgray'}),
 
-        html.Div([
-            html.H6('Deaths'),
-            dcc.Graph(id='agg-f-died-g')
-        ], className="four columns"),
-    ],
-        className="row"
-    ),
-    html.H5(children='National'),
-    html.Div([
-        html.Div([
-            html.H6('Cases'),
-            dcc.Graph(id='agg-n-case-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H6('Hospitalizations'),
-            dcc.Graph(id='agg-n-hosp-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H6('Deaths'),
-            dcc.Graph(id='agg-n-died-g')
-        ], className="four columns"),
-    ],
-        className="row"
-    ),
-html.H6("For patient privacy protection, less or equal to 5 counts of cases, hospitalizations, and deaths on any given day would not be plotted.", style={'color':'blue'}),
-    # Age separated Florida cases, hosps, deaths
-    html.H5(children="Age-stratified", style={'backgroundColor':'lightgrey', 'font-style': 'italic'}),    
-     html.Div([
-        html.Div([
-            html.H6('Gender (for both Florida and national)'),
-            dcc.Dropdown(
-                id='gender-dropdown-str',
-                options=[{'label': 'All', 'value': 'All'},
-                         {'label': 'Female', 'value': 'Female'},
-                         {'label': 'Male', 'value': 'Male'}
-
-                         ],
-                value='All',
-            ),
-        ], className="four columns"),
-
-        html.Div([
-            #html.H4("For country only:", style={"background-color": "grey"}),
-            html.H6('Race (for national only)'),
-            dcc.Dropdown(
-                id='race-dropdown-str',
-                options=[{'label': i, 'value': i} for i in race_cats],
-                value='All',
-            ),
-        ], className="four columns"),
-
-        html.Div([
-            #html.H4("\n"),
-            html.H6('State (for national only)'),
-            dcc.Dropdown(
-                id='state-dropdown-str',
-                options=[{'label': i, 'value': i} for i in states_cats],
-                value='All',
-            ),
-        ], className="four columns"),
-
-    ],
-        className="row"
-    ),
-    html.H5(children="Florida"),
-    html.Div([
-        html.Div([
-            html.H6('Cases'),
-            dcc.Graph(id='f-case-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H6('Hospitalizations'),
-            dcc.Graph(id='f-hosp-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H6('Deaths'),
-            dcc.Graph(id='f-died-g')
-        ], className="four columns"),
-    ],
-        className="row"
-    ),
-    html.H5(children='National'),
-    html.Div([
-        html.Div([
-            html.H6('Cases'),
-            dcc.Graph(id='n-case-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H6('Hospitalizations'),
-            dcc.Graph(id='n-hosp-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H6('Deaths'),
-            dcc.Graph(id='n-died-g')
-        ], className="four columns"),
-    ],
-        className="row"
-    ),
-    html.P("For patient privacy protection, counts less than or equal to five cases, hospitalizations, and deaths on any given day will not be plotted.", style={'color':'gray'}),
-    # age distribution section
-    html.H2(children="COVID-19 Age Distributions among Cases, Hospitalizations, and Deaths", style={'backgroundColor':'yellow'}),
-    html.Div([
-        html.Div([
-            html.H6('Gender (for both Florida and national)'),
-            dcc.Dropdown(
-                id='age-gender-dropdown',
-                options=[{'label': 'All', 'value': 'All'},
-                         {'label': 'Female', 'value': 'Female'},
-                         {'label': 'Male', 'value': 'Male'}
-
-                         ],
-                value='All',
-            ),
-        ], className="four columns"),
-
-        html.Div([
-            #html.H4("For country only:", style={"background-color": "grey"}),
-            html.H6('Race (for national only)'),
-            dcc.Dropdown(
-                id='age-race-dropdown',
-                options=[{'label': i, 'value': i} for i in race_cats],
-                value='All',
-            ),
-        ], className="four columns"),
-
-        html.Div([
-            #html.H4("\n"),
-            html.H6('State (for national only)'),
-            dcc.Dropdown(
-                id='age-state-dropdown',
-                options=[{'label': i, 'value': i} for i in states_cats],
-                value='All',
-            ),
-        ], className="four columns"),
-
-    ],
-        className="row"
-    ),
-    
-    
-    html.H3(children="Florida"),
-    html.Div([
-        html.Div([
-            html.H3('Cases'),
-            dcc.Graph(id='age-f-case-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H3('Hospitalizations'),
-            dcc.Graph(id='age-f-hosp-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H3('Deaths'),
-            dcc.Graph(id='age-f-died-g')
-        ], className="four columns"),
-    ],
-        className="row"
-    ),
-    html.H3(children='National'),
-    html.Div([
-        html.Div([
-            html.H3('Cases'),
-            dcc.Graph(id='age-n-case-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H3('Hospitalizations'),
-            dcc.Graph(id='age-n-hosp-g')
-        ], className="four columns"),
-
-        html.Div([
-            html.H3('Deaths'),
-            dcc.Graph(id='age-n-died-g')
-        ], className="four columns"),
-    ],
-        className="row"
-    ),
-    
-
-
- # HFR estimates nationally and for florida
-    html.H2(children="Age-stratified HFR Estimates", style={'backgroundColor':'yellow'}),
-
-    ###########DATES
-    html.H6("Choose two dates for estimating HFR drops"),
-    #html.H5("**WARNING: after 2020-12-01, due to ramp-ups of vaccines, HFR estimates might not reflect all treatment improvements.**", style={'color':'red'}),
-    html.Div([
-        html.Div([
-            #html.H3('Florida'),
-            #dcc.Input(id="date1", type="text", placeholder="2020-04-01")
-            dcc.DatePickerRange(
-                id='date1',
-                min_date_allowed="2020-04-01",
-                max_date_allowed="2020-12-01",
-                initial_visible_month="2020-04-01",
-                start_date = '2020-04-01',
-                end_date="2020-12-01"
-            ),
-        ], className="six columns"),
-    ],
-        className="row"
-    ),
-
-    ###########tables
-    html.Div([
-        html.Div([
-            html.H6('Gender (for both Florida and national)'),
-            dcc.Dropdown(
-                id='hfr-gender-dropdown',
-                options=[{'label': 'All', 'value': 'All'},
-                         {'label': 'Female', 'value': 'Female'},
-                         {'label': 'Male', 'value': 'Male'}
-
-                         ],
-                value='All',
-            ),
-        ], className="four columns"),
-
-        html.Div([
-            #html.H4("For country only:", style={"background-color": "grey"}),
-            html.H6('Race (for national only)'),
-            dcc.Dropdown(
-                id='hfr-race-dropdown',
-                options=[{'label': i, 'value': i} for i in race_cats],
-                value='All',
-            ),
-        ], className="four columns"),
-
-        html.Div([
-            #html.H4("\n"),
-            html.H6('State (for national only)'),
-            dcc.Dropdown(
-                id='hfr-state-dropdown',
-                options=[{'label': i, 'value': i} for i in states_cats],
-                value='All',
-            ),
-        ], className="four columns"),
-
-    ],
-        className="row"
-    ),
-    
-    html.Div([
-        html.Div([
-            html.H3('Florida'),
-            html.Div(id='florida-table')
-        ], className="six columns"),
-
-        html.Div([
-            html.H3('National'),
-            html.Div(id='national-table')
-        ], className="six columns"),
-    ],
-        className="row"
-    ),
-
-    html.H5("**Note: HFR estimates with insufficient support are omitted.**", style={'color':'red'}),
+    ], style={'padding': '2em'})
 
 ],
     style={'marginLeft': 5, 'marginRight': 20}
@@ -517,11 +543,9 @@ def update_hfr_national(date1, date2, gender='All', race='All', state='All'):
         ]
     )
 
-
-
 if __name__ == '__main__':
     app.run_server(debug=False, host='0.0.0.0', port=8010)
-    #app.run_server(debug=True, host='0.0.0.0', port=8010)
+    # app.run_server(debug=True, host='0.0.0.0', port=8010)
 
 
 
