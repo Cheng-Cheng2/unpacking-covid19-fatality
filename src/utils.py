@@ -58,7 +58,16 @@ def get_rolling_df(df, time='RESULT', freq=7, var='covid'):
 
 def get_groupby_rolling_df(df, grpvar='Age group', freq='7D', amt="Died", time='Calendar date'):
     #print(df[(df['Calendar date']>='2020-07-01')&(df['Calendar date']<='2020-07-07') & (df['Age group']=='65-74')][[var]].sum())
-    cats = df[grpvar].cat.categories
+    #cats = df[grpvar].cat.categories
+    cats = ['0-9',
+                                             '10-19',
+                                             '20-29',
+                                             '30-39',
+                                             '40-49',
+                                             '50-59',
+                                             '60-69',
+                                             '70-79',
+                                             '80+']
     out='rolling sum'
     #print(df[(df['Calendar date']>='2020-07-01')&(df['Calendar date']<='2020-07-07') & (df['Age group']=='65-74')][['Calendar date', 'Age group', 'rolling sum']])
     df = df[[time, grpvar, amt]]
@@ -69,7 +78,7 @@ def get_groupby_rolling_df(df, grpvar='Age group', freq='7D', amt="Died", time='
     max_date = df[time].max()
     dates = pd.date_range(min_date, max_date)
     
-    everylevel = pd.DataFrame(list(product(dates.unique(), df[grpvar].cat.categories)), columns=[time, grpvar])
+    everylevel = pd.DataFrame(list(product(dates.unique(), cats)), columns=[time, grpvar])
     everylevel[amt] = 0
     #print(everylevel[0:3])
     #df4 = df3[['Age_group','HFR']].merge(df.loc[:, df.columns != time], on=['Age_group', time], how='inner')

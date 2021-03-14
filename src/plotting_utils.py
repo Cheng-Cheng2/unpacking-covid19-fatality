@@ -257,17 +257,20 @@ def age_distribution_plots(florida, gender='All', time='Case_', race='All', stat
             if state != 'All':
                 newdf = newdf[newdf['res_state']==state]
 
-        
+        if grpvar == 'Age_group':
+            newdf = remove_unkown(newdf, grpvar)
         for i, v in enumerate(vrs):
             if not(newdf is None or len(newdf)==0):
+                fn = os.path.join(IMGDIR,fname+vrs[i]+'.json')
+                print("caching:", fn)
+                #pdb.set_trace()
                 amt = v
                 #newdf = florida.copy()
                 min_date = "2020-04-01"
                 max_date = "2021-02-01"
                 ylb = 'Ratio' 
                 xlb = 'Positive Confirmed Date' if time=='Case_' else 'CDC Report Date'
-                if grpvar == 'Age_group':
-                    newdf = remove_unkown(newdf, grpvar)
+
                 freq = '7D'
                 df = get_groupby_rolling_df(newdf, grpvar, freq, amt, time)
                 df[amt] = df['rolling sum']
@@ -317,8 +320,8 @@ def age_distribution_plots(florida, gender='All', time='Case_', race='All', stat
                     height=300
                 )
     
-            fn = os.path.join(IMGDIR,fname+vrs[i]+'.json')
-            print("caching:", fn)
+            
+            #print("caching:", fn)
             with open(fn, 'w') as f:
             #     pickle.dump(html_bytes, f)
                 f.write(fig.to_json())
@@ -363,10 +366,11 @@ if __name__ == '__main__':
 # if __name__ == '__main__':
 #     florida, cdc = get_datafiles_ready()
 #     gender = 'All'
-#     race = 'American Indian or Alaska Native'
-#     state = 'VI'
+#     race = 'Asian'
+#     state = 'WV'
 #     # DIED
-#     figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
+#     #figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
+#     figs = age_distribution_plots(cdc, gender, 'cdc_case_earliest_dt', race, state)
 
 
 
