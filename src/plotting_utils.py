@@ -351,6 +351,7 @@ if __name__ == '__main__':
     for gender in ['All', 'Female', 'Male']:
         #figs = florida_case_hosp_death_agg(florida, gender)
         #figs = florida_case_hosp_death(florida, gender)
+        #print("time_{}_gender_{}_race_{}_state_{}".format('Case', gender, 'All', 'All'))
         figs = age_distribution_plots(florida, gender)
         count += 9
 
@@ -358,6 +359,7 @@ if __name__ == '__main__':
             for state in states_cats:
                 #figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
                 #figs = florida_case_hosp_death(cdc, gender, 'cdc_case_earliest_dt', race, state)
+                #print("time_{}_gender_{}_race_{}_state_{}".format('cdc', gender, race, state))
                 figs = age_distribution_plots(cdc, gender, 'cdc_case_earliest_dt', race, state)
                 count += 9
                 print("******Count:{}/{}".format(count, total))
