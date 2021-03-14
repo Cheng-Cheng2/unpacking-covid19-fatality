@@ -139,6 +139,7 @@ def florida_case_hosp_death_agg(florida, gender='All', time='Case_', race='All',
     fname = "agg_time_{}_gender_{}_race_{}_state_{}_".format(time, gender, race, state)
     figs = []
     vrs = ['all', 'Hospitalized', 'Died'] # 'Died'
+    #pdb.set_trace()
     if not os.path.exists(os.path.join(IMGDIR,fname + vrs[0] +'.json')) or REWRITE:
         florida['all'] = 1
         lbs = ['COVID-19 Cases','COVID-19 Hospitalizations', 'COVID-19 Deaths']
@@ -162,8 +163,7 @@ def florida_case_hosp_death_agg(florida, gender='All', time='Case_', race='All',
                 newdf = newdf[newdf['res_state']==state]
         
         # marginal case when it is empty
-        if newdf is None or len(newdf)==0:
-            return None
+
 
         figs = []
         for i, v in enumerate(vrs):
@@ -261,7 +261,7 @@ def age_distribution_plots(florida, gender='All', time='Case_', race='All', stat
         for i, v in enumerate(vrs):
             if not(newdf is None or len(newdf)==0):
                 amt = v
-                newdf = florida.copy()
+                #newdf = florida.copy()
                 min_date = "2020-04-01"
                 max_date = "2021-02-01"
                 ylb = 'Ratio' 
@@ -345,15 +345,15 @@ if __name__ == '__main__':
     total = 3*3*3 + 3*len(race_cats)*len(states_cats)*9
     count = 0
     for gender in ['All', 'Female', 'Male']:
-        figs = florida_case_hosp_death_agg(florida, gender)
-        figs = florida_case_hosp_death(florida, gender)
+        #figs = florida_case_hosp_death_agg(florida, gender)
+        #figs = florida_case_hosp_death(florida, gender)
         figs = age_distribution_plots(florida, gender)
         count += 9
 
         for race in race_cats:
             for state in states_cats:
-                figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
-                figs = florida_case_hosp_death(cdc, gender, 'cdc_case_earliest_dt', race, state)
+                #figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
+                #figs = florida_case_hosp_death(cdc, gender, 'cdc_case_earliest_dt', race, state)
                 figs = age_distribution_plots(cdc, gender, 'cdc_case_earliest_dt', race, state)
                 count += 9
                 print("******Count:{}/{}".format(count, total))
@@ -363,8 +363,8 @@ if __name__ == '__main__':
 # if __name__ == '__main__':
 #     florida, cdc = get_datafiles_ready()
 #     gender = 'All'
-#     race = 'Black'
-#     state = 'NV'
+#     race = 'American Indian or Alaska Native'
+#     state = 'VI'
 #     # DIED
 #     figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
 
