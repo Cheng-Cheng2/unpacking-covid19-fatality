@@ -322,6 +322,7 @@ def age_distribution_plots(florida, gender='All', time='Case_', race='All', stat
     
             
             #print("caching:", fn)
+            fn = os.path.join(IMGDIR,fname+vrs[i]+'.json')
             with open(fn, 'w') as f:
             #     pickle.dump(html_bytes, f)
                 f.write(fig.to_json())
