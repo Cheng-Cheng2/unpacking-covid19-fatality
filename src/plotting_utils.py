@@ -280,7 +280,7 @@ def age_distribution_plots(florida, gender='All', time='Case_', race='All', stat
                 
                 m = merged[(merged.index >=min_date) & (merged.index<=max_date)]
                 m = m.reset_index()
-                print(m.columns)
+                #print(m.columns)
                 m = m.rename(columns={time:"Date", 'died_ratio':vnames[i], 'Age_group':'Age Group'})
 
                 fig = px.bar(m, x='Date', y=vnames[i], color="Age Group", barmode = 'stack')        
