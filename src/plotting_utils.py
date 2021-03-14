@@ -369,16 +369,4 @@ if __name__ == '__main__':
 #     figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
 
 
-# %%
-# f = "cache_figs/agg_time_cdc_case_earliest_dt_gender_All_race_Hispanic_Latino_state_MO_all.json"
 
-# with open(f, 'w') as f:
-#     print('opened')
-
-# %%
-
-# %%
-
-# %%
-print('why')
-# %%
