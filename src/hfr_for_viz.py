@@ -77,6 +77,8 @@ def get_HFR(florida, grpvar, freq, timevar, numfreq=7):
     if pd.isnull(min_date) or pd.isnull(max_date):
         pdb.set_trace()
     newdf = florida[florida['Hospitalized'] == 1].copy()  # among hospitalized
+    if newdf is None or len(newdf)==None:
+        return None, None
     died_roll = get_rolling_df(newdf, time, freq=numfreq, var='Died').copy()
     hosp_roll = get_rolling_df(newdf, time, freq=numfreq, var='Hospitalized').copy()
 
@@ -110,6 +112,8 @@ def get_support(florida, dates_of_interest, min_deaths=2, timevar='Case_'):
     #timevar = 'Case_'
 
     hfr_df, age_hfr = get_HFR(florida, grpvar, freq, timevar, numfreq=7)
+    if hfr_df is None or age_hfr is None:
+        return None
     age_hfr = age_hfr[age_hfr.index.isin(dates_of_interest)][['Hospitalized', 'Died', 'Age_group']]
     min_support = age_hfr.groupby('Age_group')['Died'].min()
     min_support = (min_support > min_deaths).reset_index()
@@ -123,6 +127,8 @@ def get_combined_df(florida, min_date, max_date,
                     verbose=False):
     # get HFRs in aggregate and per age group
     hfr_df, age_hfr = get_HFR(florida, grpvar, freq, timevar, numfreq=7)
+    if hfr_df is None or age_hfr is None:
+        return None
 
     if verbose:
         print('=========== counts on days of interest ==============')
@@ -276,6 +282,8 @@ def compute_hfr_estimates(national, florida, days_of_interest, filters=None, upd
         combined_df = get_combined_df(florida, MIN_DATE, MAX_DATE, 
                         grpvar='Age_group', freq='7D', amt='Died', timevar=timevar, 
                         verbose=verbose)
+        if combined_df is None:
+            return None                        
 
         ## CUBIC SPLINES
 
@@ -315,6 +323,8 @@ def compute_hfr_estimates(national, florida, days_of_interest, filters=None, upd
     if update_florida == True:
         print('==================== FLORIDA ====================')
         min_support_ages = get_support(florida, days_of_interest)
+        if min_support_ages is None:
+            return None
         florida_est = analyze_data(florida, 'florida_fdoh', timevar='Case_')
         florida_est = florida_est[florida_est.index.isin(min_support_ages)]
         print(florida_est)
@@ -322,6 +332,8 @@ def compute_hfr_estimates(national, florida, days_of_interest, filters=None, upd
     else:
         print('==================== NATIONAL ====================')
         min_support_ages = get_support(national, days_of_interest, 2, 'cdc_case_earliest_dt')
+        if min_support_ages is None:
+            return None
         national_est = analyze_data(national, 'national', timevar='cdc_case_earliest_dt')
         national_est = national_est[national_est.index.isin(min_support_ages)]
         print(national_est)
