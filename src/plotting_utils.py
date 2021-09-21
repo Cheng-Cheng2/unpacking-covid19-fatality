@@ -19,12 +19,15 @@ IMGDIR = "cache_figs"
 REWRITE = False
 def get_datafiles_ready():
     min_date = '2020-03-26'
-    max_date = "2021-02-01"
+    max_date = "2021-08-01"
+    #max_date = "2021-02-01"
     CLEANDIR = "../../cleaned_data"
-    florida = pd.read_csv(os.path.join(CLEANDIR, 'florida_2021-03-07-15-35-01.csv'),index_col=False, parse_dates=['Case_', "ChartDate"], dtype={'Age_group':'category'})
+    #florida = pd.read_csv(os.path.join(CLEANDIR, 'florida_2021-03-07-15-35-01.csv'),index_col=False, parse_dates=['Case_', "ChartDate"], dtype={'Age_group':'category'})
+    florida = pd.read_csv(os.path.join(CLEANDIR, 'florida_2021-08-31-15-35-01.csv'),index_col=False, parse_dates=['Case_', "ChartDate"], dtype={'Age_group':'category'})
     
     print("Finished loading Florida data.")
-    cdc = pd.read_csv(os.path.join(CLEANDIR, "cdc_02282021_total.csv"),index_col=False, parse_dates=['cdc_case_earliest_dt'],  dtype={'Age_group':'category', 'race_ethnicity_combined':'category'})  
+    #cdc = pd.read_csv(os.path.join(CLEANDIR, "cdc_02282021_total.csv"),index_col=False, parse_dates=['cdc_case_earliest_dt'],  dtype={'Age_group':'category', 'race_ethnicity_combined':'category'})  
+    cdc = pd.read_csv(os.path.join(CLEANDIR, "cdc_08312021_total.csv"),index_col=False, parse_dates=['cdc_case_earliest_dt'],  dtype={'Age_group':'category', 'race_ethnicity_combined':'category'})  
     
     cdc['race_ethnicity_combined'].cat.rename_categories({'Asian, Non-Hispanic':'Asian',
                                  'Black, Non-Hispanic':'Black',
@@ -267,7 +270,8 @@ def age_distribution_plots(florida, gender='All', time='Case_', race='All', stat
                 amt = v
                 #newdf = florida.copy()
                 min_date = "2020-04-01"
-                max_date = "2021-02-01"
+                #max_date = "2021-02-01"
+                max_date = "2021-08-01"
                 ylb = 'Ratio' 
                 xlb = 'Positive Confirmed Date' if time=='Case_' else 'CDC Report Date'
 

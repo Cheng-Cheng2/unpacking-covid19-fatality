@@ -274,7 +274,8 @@ def compute_hfr_estimates(national, florida, days_of_interest, filters=None, upd
     decreases_of_interest = [(days_of_interest[0], days_of_interest[1])]
 
     MIN_DATE = '2020-04-01'
-    MAX_DATE = '2021-02-01'
+    #MAX_DATE = '2021-02-01'
+    MAX_DATE = '2021-08-01'
     verbose = False
 
     def analyze_data(florida, TAG, return_replicates=False, timevar='Case_'):

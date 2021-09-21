@@ -397,7 +397,7 @@ app.layout = html.Div([
     ], style={'padding': '2em'})
 
 ],
-    style={'marginLeft': 5, 'marginRight': 20}
+    style={'marginLeft': 5, 'marginRight': 30}
 )
 # app.css.append_css({
 #     "external_url": "https://codepen.io/chriddyp/pen/bWLwgP.css"
