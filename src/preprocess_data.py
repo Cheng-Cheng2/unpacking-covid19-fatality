@@ -13,14 +13,18 @@ import plotly.express as px
 pd.options.plotting.backend = "plotly"
 from utils import *
 
-
+CDC_DATE = '08312021'
+FLORIDA_DATE = '2021-08-31-15-35-01'
+CLEANDIR = '../data/cleaned'
+FLORIDA_DATA_DIR = '../data'
+CDC_DATA_DIR = '../data'
 
 def get_florida_data_ready():
-    DATA_DIR = "../../data/"
+    DATA_DIR = FLORIDA_DATA_DIR
     time = 'Case_'
     #print(time)
     florida= pd.read_csv(os.path.join(
-            DATA_DIR, 'florida_2021-03-07-15-35-01.csv'),index_col=False, parse_dates=[time, "ChartDate"])
+            DATA_DIR, f'florida_{FLORIDA_DATE}.csv'),index_col=False, parse_dates=[time, "ChartDate"])
     florida["Age_group"] = florida["Age_group"].astype('category')
     print(florida['Hospitalized'].value_counts())
     print(florida['Hospitalized'].unique()) # 'YES'=1, else = 0
@@ -114,8 +118,8 @@ def get_cdc_data_ready():
     import os
 
 
-    data_dir = '../../data'
-    country = pd.read_csv(os.path.join(data_dir, 'CDC_02282021_total.csv'), parse_dates=['cdc_case_earliest_dt'])
+    data_dir = CDC_DATA_DIR
+    country = pd.read_csv(os.path.join(data_dir, f'cdc_{CDC_DATE}_total.csv'), parse_dates=['cdc_case_earliest_dt'])
 
 
     print('all cases', country.shape)
@@ -206,20 +210,19 @@ def get_cdc_data_ready():
 
 
 def get_datafiles_ready():
-    CLEANDIR = "../../cleaned_data"
-    florida = pd.read_csv(os.path.join(CLEANDIR, 'florida_2021-03-07-15-35-01.csv'),index_col=False, parse_dates=['Case_', "ChartDate"])
-    cdc = pd.read_csv(os.path.join(CLEANDIR, "cdc_02282021_total.csv"),index_col=False, parse_dates=['cdc_case_earliest_dt'])
+    florida = pd.read_csv(os.path.join(CLEANDIR, f'florida_{FLORIDA_DATE}.csv'),index_col=False, parse_dates=['Case_', "ChartDate"])
+    cdc = pd.read_csv(os.path.join(CLEANDIR, f"cdc_{CDC_DATE}_total.csv"),index_col=False, parse_dates=['cdc_case_earliest_dt'])
 
 
 
 #%%
-CLEANDIR = "../../cleaned_data"
+#CLEANDIR = "../../cleaned_data"
 
-florida = get_florida_data_ready()
-florida.to_csv(os.path.join(CLEANDIR, 'florida_2021-03-07-15-35-01.csv'), index=False)
-
-florida = pd.read_csv(os.path.join(CLEANDIR, 'florida_2021-03-07-15-35-01.csv'),index_col=False, parse_dates=['Case_', "ChartDate"])
-
+#florida = get_florida_data_ready()
+#florida.to_csv(os.path.join(CLEANDIR, f'florida_{FLORIDA_DATE}.csv'), index=False)
+#
+#florida = pd.read_csv(os.path.join(CLEANDIR, f'florida_{FLORIDA_DATE}.csv'),index_col=False, parse_dates=['Case_', "ChartDate"])
+#
 
 
 #%%
@@ -227,12 +230,11 @@ florida = pd.read_csv(os.path.join(CLEANDIR, 'florida_2021-03-07-15-35-01.csv'),
 
 cdc = get_cdc_data_ready()
 
-cdc.to_csv(os.path.join(CLEANDIR, "cdc_02282021_total.csv"))
+cdc.to_csv(os.path.join(CLEANDIR, f"cdc_{CDC_DATE}_total.csv"))
 
 #%%
 import pandas as pd
-CLEANDIR = "../../cleaned_data"
-cdc = pd.read_csv(os.path.join(CLEANDIR, "cdc_02282021_total.csv"),index_col=False, parse_dates=['cdc_case_earliest_dt'])
+cdc = pd.read_csv(os.path.join(CLEANDIR, f"cdc_{CDC_DATE}_total.csv"),index_col=False, parse_dates=['cdc_case_earliest_dt'])
 
 
 

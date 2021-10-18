@@ -21,7 +21,8 @@ def get_datafiles_ready():
     min_date = '2020-03-26'
     max_date = "2021-08-01"
     #max_date = "2021-02-01"
-    CLEANDIR = "../../cleaned_data"
+    #CLEANDIR = "../../cleaned_data"
+    CLEANDIR = "../data"
     #florida = pd.read_csv(os.path.join(CLEANDIR, 'florida_2021-03-07-15-35-01.csv'),index_col=False, parse_dates=['Case_', "ChartDate"], dtype={'Age_group':'category'})
     florida = pd.read_csv(os.path.join(CLEANDIR, 'florida_2021-08-31-15-35-01.csv'),index_col=False, parse_dates=['Case_', "ChartDate"], dtype={'Age_group':'category'})
     
@@ -32,7 +33,7 @@ def get_datafiles_ready():
     cdc['race_ethnicity_combined'].cat.rename_categories({'Asian, Non-Hispanic':'Asian',
                                  'Black, Non-Hispanic':'Black',
                                   'White, Non-Hispanic':'White',
-                                   'Multiple/Other, Non-Hispanic ':'Multiple or Other',
+                                   'Multiple/Other, Non-Hispanic':'Multiple or Other',
                                     'Native Hawaiian/Other Pacific Islander, Non-Hispanic':'Native Hawaiian or Other Pacific Islander',
                                     'American Indian/Alaska Native, Non-Hispanic':'American Indian or Alaska Native',
                                     'Hispanic/Latino': 'Hispanic or Latino'},
@@ -241,7 +242,6 @@ def age_distribution_plots(florida, gender='All', time='Case_', race='All', stat
     fname = "age_time_{}_gender_{}_race_{}_state_{}_".format(time, gender, race, state)
     figs = []
     vrs = ['all', 'Hospitalized', 'Died'] # 'Died'
-
     if not os.path.exists(os.path.join(IMGDIR,fname + vrs[0] +'.json')) or REWRITE:
         florida['all'] = 1
 
@@ -344,6 +344,11 @@ def age_distribution_plots(florida, gender='All', time='Case_', race='All', stat
 # %%
 if __name__ == '__main__':
     florida, cdc = get_datafiles_ready()
+    
+    print('florida orig: ', len(florida), 'cdc orig: ', len(cdc))
+    florida = florida[florida['Age_group'] != '_Unknown']
+    cdc = cdc[cdc['Age_group'] != '_Unknown']
+    print('florida known age: ', len(florida), 'cdc known age: ', len(cdc))
 
     race_cats = ['All']+cdc['race_ethnicity_combined'].dropna().unique().tolist()
     race_cats = [x for x in race_cats if (x != 'Missing')  and (x!='Unknown')]
@@ -353,17 +358,17 @@ if __name__ == '__main__':
     total = 3*3*3 + 3*len(race_cats)*len(states_cats)*9
     count = 0
     for gender in ['All', 'Female', 'Male']:
-        #figs = florida_case_hosp_death_agg(florida, gender)
-        #figs = florida_case_hosp_death(florida, gender)
-        #print("time_{}_gender_{}_race_{}_state_{}".format('Case', gender, 'All', 'All'))
+        figs = florida_case_hosp_death_agg(florida, gender)
+        figs = florida_case_hosp_death(florida, gender)
+        print("time_{}_gender_{}_race_{}_state_{}".format('Case', gender, 'All', 'All'))
         figs = age_distribution_plots(florida, gender)
         count += 9
 
         for race in race_cats:
             for state in states_cats:
-                #figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
-                #figs = florida_case_hosp_death(cdc, gender, 'cdc_case_earliest_dt', race, state)
-                #print("time_{}_gender_{}_race_{}_state_{}".format('cdc', gender, race, state))
+                figs = florida_case_hosp_death_agg(cdc, gender, 'cdc_case_earliest_dt', race, state)
+                figs = florida_case_hosp_death(cdc, gender, 'cdc_case_earliest_dt', race, state)
+                print("time_{}_gender_{}_race_{}_state_{}".format('cdc', gender, race, state))
                 figs = age_distribution_plots(cdc, gender, 'cdc_case_earliest_dt', race, state)
                 count += 9
                 print("******Count:{}/{}".format(count, total))

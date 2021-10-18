@@ -87,8 +87,11 @@ def get_groupby_rolling_df(df, grpvar='Age group', freq='7D', amt="Died", time='
     df = df.merge(everylevel, on=[time, grpvar, amt], how='outer')
     df.sort_values(by=time,inplace=True)
     df[grpvar] = df[grpvar].astype('category')
-    df[grpvar].cat.reorder_categories(cats, inplace=True)
-
+    try:
+        df[grpvar].cat.reorder_categories(cats, inplace=True)
+    except Exception as e:
+        print(e)
+        import pdb; pdb.set_trace()
     df[out]= df.groupby([grpvar],  as_index=False, group_keys=False) \
                                .apply(get_rolling_amount, freq, amt, time)                          
                             #columns=[time, grpvar])
